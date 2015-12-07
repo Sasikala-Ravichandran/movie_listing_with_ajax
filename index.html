@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Infinite Scrolling with ajax</title>
+    <link rel="stylesheet" href= "assets/css/main.css">
+  </head>
+    
+   <body>
+     <h1 class="title"> Movies on Scroll</h1>
+     <h3 class="title">.....scroll down to see how many movies on the page</h3>
+      <div id="line"></div>
+     <div class="loading">
+     	<img src="assets/images/download .png">
+     	<p>Please do wait until the movie loads completely.....</p>
+     </div>
+    
+       <ul id="movies">
+       	 <script id="templating" type="text/x-handlebars-template">
+       	  
+       	    <li id="movie">
+       	       
+       	       <section id="right_column">
+       	          <h2 id="Title">{{Title}} <span>({{Year}})</span></h2>
+       	          
+       	          <ul class="details">
+       	            <li id="rated">{{Rated}}</li>
+       	            <li><span class="desc">Runtime: </span>{{Runtime}}</li>
+       	            <li><span class="desc">Genre: </span>{{formatGenre}}</li>
+       	            <li><span class="desc">Released: </span>{{Released}}</li>
+       	          </ul>
+       	          <ul class="details">
+       	            <li>Rating: <span class="desc">{{imdbRating}}</span>/10  
+       	             from <span class="desc">{{imdbVotes}} </span> users</li>
+       	            <li><span class="desc">Metascore: </span></span>{{Metascore}}/100</li>
+       	             
+       	          </ul>
+       	          <ul class="details">
+       	            <li><span class="desc">Language: </span>{{Language}}</li>
+       	            <li><span class="desc">Country: </span>{{Country}}</li>
+       	            <li><span class="desc">Awards: </span>{{Awards}}</li>
+       	             
+       	          </ul>
+       	          <br/>
+       	          <p><span class="desc">Director: </span>{{Director}}</p><br/>
+       	          <p><span class="desc">Writer: </span>{{Writer}}</p><br/>
+       	          <p><span class="desc">Stars: </span>{{Actors}}</p><br/>
+       	          <p><em>{{Plot}}</em></p><br/>
+       	       </section>
+       	        <img id="left_column" src="{{Poster}}" alt="{{Title}}"/>
+       	    </li>
+       	    
+         </script>
+       </ul>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+      <script src="assets/js/handlebars-v3.0.3.js"></script>
+      <script src="assets/js/script.js"></script>
+   </body>
+</html>
+ 
+ 
