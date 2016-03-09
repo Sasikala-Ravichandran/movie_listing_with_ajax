@@ -1,13 +1,9 @@
 // Display an infinite scroll of movies with Ajax
-
-var Movie = {
-   
-   //initializing the page with movies
-    init: function(config){
-   	
+var Movie = {   
+  //initializing the page with movies
+  init: function(config){
     //IMDS ids for movies (used here are top 250 ranked movies) to be requested via Ajax,
-
-   this.movieIDs =[
+    this.movieIDs =[
     'tt0111161', 'tt0068646', 'tt0071562', 'tt0468569', 'tt0110912', 
     'tt0060196', 'tt0108052', 'tt0050083', 'tt0167260', 'tt0137523', 
     'tt0120737', 'tt0080684', 'tt1375666', 'tt0109830', 'tt0073486', 
@@ -59,93 +55,81 @@ var Movie = {
     'tt1010048', 'tt0046359', 'tt0040746', 'tt0085334', 'tt0049406', 
     'tt0381681', 'tt0070511', 'tt1555149', 'tt0450259', 'tt0367110'
     ];
- 
-   this.tempMovieIDs = []; // Used for an endless supply of movie ids by switching with 
-  // movieIDs when all movies in movieIDs have been displayed
-   this.template = config.template; //templated html code 
-   this.container = config.container; // container to which the movies are to be added during each scrolls
-   this.load = config.load; // represents initial no. of movies to be loaded.
-   this.loadMovies(this.load); 
-   },
-  
+
+    this.tempMovieIDs = []; // Used for an endless supply of movie ids by switching with 
+    // movieIDs when all movies in movieIDs have been displayed
+    this.template = config.template; //templated html code 
+    this.container = config.container; // container to which the movies are to be added during each scrolls
+    this.load = config.load; // represents initial no. of movies to be loaded.
+    this.loadMovies(this.load); 
+  },
   // Randomly select the ID of a movie to be requested
   getMovieID: function(){
-      if(this.movieIDs.length){
-        var index = Math.floor( Math.random() * this.movieIDs.length);
-        this.tempMovieIDs.push(this.movieIDs[index]);
-        return this.movieIDs.splice(index, 1); // splice up the movieID for avoiding the repetition of the moveIDs
-      }else{ // movieIDs are empty, use tempMovieIDs
-        this.movieIDs = tempMovieIDs;
-        this.tempMovieIDs = [];
-        return this.getMovieID();
-      }
+    if(this.movieIDs.length){
+      var index = Math.floor( Math.random() * this.movieIDs.length);
+      this.tempMovieIDs.push(this.movieIDs[index]);
+      return this.movieIDs.splice(index, 1); // splice up the movieID for avoiding the repetition of the moveIDs
+    }else{ // movieIDs are empty, use tempMovieIDs
+      this.movieIDs = tempMovieIDs;
+      this.tempMovieIDs = [];
+      return this.getMovieID();
+    }
   },
-
+  
   // getting the url for each movieID
   loadMovies: function(load){
-      for(var i=0; i<load; i++){
-   	     this.url= "http://www.omdbapi.com/?i=" + this.getMovieID();
-   	     this.fetch();
+    for(var i=0; i<load; i++){
+      this.url= "http://www.omdbapi.com/?i=" + this.getMovieID();
+      this.fetch();
     };
   },
 
- // attaching the data to the templated html code
+  // attaching the data to the templated html code
   attachTemplate: function(){
-
-      Handlebars.registerHelper( 'formatGenre', function( Genre ) {
-        return(Genre.data.root.Genre.split(',').join(" | "));
-     
-  });
+    Handlebars.registerHelper( 'formatGenre', function( Genre ) {
+      return(Genre.data.root.Genre.split(',').join(" | "));
+    });
     // use the complied Handlebars function to compile the html template
-     var template =  Handlebars.compile(this.template); //Get the template from HTML file and compile it
+    var template =  Handlebars.compile(this.template); //Get the template from HTML file and compile it
     //bind the data from Ajax request to complied html code
     console.log(this.arr.Genre);
-     var temp = template(this.arr);
+    var temp = template(this.arr);
     //append it to the container 
-     this.container.append(temp);
-
-  
-
+    this.container.append(temp);
   },
 
-// make the Ajax request and get the movie details for each movie
+  // make the Ajax request and get the movie details for each movie
   fetch: function(){
-     var self = this;
-     $.getJSON(this.url, function(data){
-     	 self.arr = data;
-     	 self.attachTemplate();
-     });
-   }
+    var self = this;
+    $.getJSON(this.url, function(data){
+      self.arr = data;
+      self.attachTemplate();
+    });
+  }
 };
 
 $(function(){
-	var loading = false;
+  var loading = false;
+  $( document ).on('ajaxStart', function(){
+    loading = true;
+    console.log("load true");
+    $('.loading').show();
+  }).on("ajaxStop", function(){
+    $('.loading').hide();
+    loading = false;
+    console.log("load false");
+  });
 
-    $( document ).on('ajaxStart', function(){
-        loading = true;
-        console.log("load true");
-        $('.loading').show();
-        }).on("ajaxStop", function(){
-        $('.loading').hide();
-        loading = false;
-        console.log("load false");
-        });
+  Movie.init({ template: $('#templating').html(),
+                container: $('#movies'),
+                load: 10 });
 
-
-	Movie.init({ template: $('#templating').html(),
-             container: $('#movies'),
-             load: 10 });
-
- 
-	$( document ).on( 'scroll', function() {
+  $( document ).on( 'scroll', function() {
     // Load more movies when the user scrolls to the bottom of the page
-        if( $( document ).scrollTop() + $( window ).height() === 
-            $( document ).height() ) {
-    	    console.log("loading more movies");
-           if(!loading){ console.log("sasi done baby"); Movie.loadMovies(10); }
-            
-        }
+    if( $( document ).scrollTop() + $( window ).height() === 
+      $( document ).height() ) {
+        console.log("loading more movies");
+        if(!loading){ console.log("Finished"); Movie.loadMovies(10); }
+      }
     });
-
-
 });
